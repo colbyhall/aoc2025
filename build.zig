@@ -2,15 +2,21 @@ const std = @import("std");
 const fmt = std.fmt;
 
 pub fn build(b: *std.Build) void {
-    addDay(b, 1);
-}
-
-fn addDay(b: *std.Build, index: u32) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    const name = fmt.allocPrint(b.allocator, "day{}", .{ index }) catch unreachable;
-    const path = fmt.allocPrint(b.allocator, "src/day{}.zig", .{ index }) catch unreachable;
+    addDay(b, target, optimize, 1);
+    addDay(b, target, optimize, 2);
+}
+
+fn addDay(
+    b: *std.Build,
+    target: std.Build.ResolvedTarget,
+    optimize: std.builtin.OptimizeMode,
+    index: u32,
+) void {
+    const name = fmt.allocPrint(b.allocator, "day{}", .{index}) catch unreachable;
+    const path = fmt.allocPrint(b.allocator, "src/day{}.zig", .{index}) catch unreachable;
 
     const day = b.addExecutable(.{
         .name = name,
@@ -23,7 +29,7 @@ fn addDay(b: *std.Build, index: u32) void {
 
     b.installArtifact(day);
 
-    const run_step_desc = fmt.allocPrint(b.allocator, "Run Day{} AOC", .{ index }) catch unreachable;
+    const run_step_desc = fmt.allocPrint(b.allocator, "Run Day{} AOC", .{index}) catch unreachable;
     const run_step = b.step(name, run_step_desc);
 
     const run_cmd = b.addRunArtifact(day);
