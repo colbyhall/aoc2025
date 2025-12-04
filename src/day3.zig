@@ -46,34 +46,27 @@ fn evalPart2() !u64 {
         }
 
         const bank = input[start..outer];
-        const num_batteries = 12;
-        var number: [num_batteries]u8 = undefined;
+        const batteries = 12;
 
         var last_battery: usize = 0;
-        for (0..num_batteries) |digit| {
-            const end_delta = num_batteries - digit - 1;
+        for (0..batteries) |digit| {
+            const end_delta = batteries - digit - 1;
 
             var largest: u8 = 0;
-            inner: for (last_battery..bank.len - end_delta) |index| {
-                const battery = bank[index];
+            for (last_battery..bank.len - end_delta) |index| {
+                const battery = bank[index] - '0';
                 if (battery > largest) {
                     largest = battery;
                     last_battery = index + 1;
 
                     if (battery == 9) {
-                        break :inner;
+                        break;
                     }
                 }
             }
-            number[digit] = largest;
+            total += largest * try math.powi(u64, 10, @intCast(end_delta));
         }
 
-        var joltage: u64 = 0;
-        for (0..num_batteries) |index| {
-            const exp = num_batteries - index - 1;
-            joltage += number[index] * try math.powi(u64, 10, @intCast(exp));
-        }
-        total += joltage;
         start = outer + 1;
     }
     return total;
