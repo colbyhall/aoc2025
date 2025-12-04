@@ -45,24 +45,22 @@ fn evalPart2() !u64 {
             continue;
         }
 
-        const current = input[start..outer];
-        const number_size = 12;
-        var number: [number_size]u8 = undefined;
+        const bank = input[start..outer];
+        const num_batteries = 12;
+        var number: [num_batteries]u8 = undefined;
 
-        var last_largest_pos: usize = 0;
-        for (0..number_size) |digit| {
-            const end_delta = number_size - digit - 1;
+        var last_battery: usize = 0;
+        for (0..num_batteries) |digit| {
+            const end_delta = num_batteries - digit - 1;
 
             var largest: u8 = 0;
-            inner: for (last_largest_pos..current.len - end_delta) |index| {
-                const c = current[index];
-                const value = c - '0';
+            inner: for (last_battery..bank.len - end_delta) |index| {
+                const battery = bank[index];
+                if (battery > largest) {
+                    largest = battery;
+                    last_battery = index + 1;
 
-                if (value > largest) {
-                    largest = value;
-                    last_largest_pos = index + 1;
-
-                    if (value == 9) {
+                    if (battery == 9) {
                         break :inner;
                     }
                 }
@@ -71,8 +69,8 @@ fn evalPart2() !u64 {
         }
 
         var joltage: u64 = 0;
-        for (0..number_size) |index| {
-            const exp = number_size - index - 1;
+        for (0..num_batteries) |index| {
+            const exp = num_batteries - index - 1;
             joltage += number[index] * try math.powi(u64, 10, @intCast(exp));
         }
         total += joltage;
