@@ -5,9 +5,10 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    addDay(b, target, optimize, 1);
-    addDay(b, target, optimize, 2);
-    addDay(b, target, optimize, 3);
+    const day = 4;
+    for (1..day + 1) |i| {
+        addDay(b, target, optimize, @intCast(i));
+    }
 }
 
 fn addDay(
